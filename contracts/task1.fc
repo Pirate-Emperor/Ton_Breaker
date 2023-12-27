@@ -1,103 +1,98 @@
-#pragma version >=0.2.0;
-
 #include "imports/stdlib.fc";
-
 
 ;; =============== storage =============================
 
 ;; storage binary format is defined as TL-B in companion .tlb file
 
-(slice, int) load_data() inline {
+(int, int, slice, int) load_data() inline {
   var ds = get_data().begin_parse();
   return (
-    ds~load_msg_addr(), ;; owner_address
-    ds~load_uint(64)    ;; counter
+    ds~load_uint(256),  ;; public_key
+    ds~load_uint(32),   ;; execution_time
+    ds~load_msg_addr(), ;; receiver
+    ds~load_uint(32)    ;; seqno
   );
 }
 
-() save_data(slice owner_address, int counter) impure inline {
+() save_data(int public_key, int execution_time, slice receiver, int seqno) impure inline {
   set_data(begin_cell()
-    .store_slice(owner_address)
-    .store_uint(counter, 64)
+    .store_uint(public_key, 256)
+    .store_uint(execution_time, 32)
+    .store_slice(receiver)
+    .store_uint(seqno, 32)
     .end_cell());
 }
 
-;; =============== messages =============================
-
-;; message binary format is defined as TL-B in companion .tlb file
-
-() op_withdraw(int withdraw_amount, slice owner_address) impure;
-
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
-  ;; parse incoming internal message
-  slice cs = in_msg_full.begin_parse();
-  int flags = cs~load_uint(4); ;; int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
-  slice sender_address = cs~load_msg_addr();
+    ;; parse incoming internal message
+    slice cs = in_msg_full.begin_parse();
+    int flags = cs~load_uint(4); ;; int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
+    slice sender_address = cs~load_msg_addr();
 
-  ;; handle bounced messages
-  if (flags & 1) {
-    return (); ;; ignore
-  }
+    ;; handle bounced messages
+    if (flags & 1) {
+        return (); ;; ignore
+    }
 
-  ;; load from contract storage
-  var (owner_address, counter) = load_data();
+    ;; load from contract storage
+    var (public_key, execution_time, receiver, seqno) = load_data();
 
-  ;; handle operations
-  int op = in_msg_body~load_uint(32);
-  int query_id = in_msg_body~load_uint(64);
-  
-  if (op == op::increment) {
-    save_data(owner_address, counter + 1);
-    return ();
-  }
+    ;; handle operations
+    int op = in_msg_body~load_uint(32);
+    int query_id = in_msg_body~load_uint(64);
 
-  if (op == op::deposit) {
-    ;; empty since ton received (msg_value) is added automatically to contract balance
-    ;; ~dump msg_value; ;; an example of debug output, requires running contract in debug mode
-    return ();
-  }
-  
-  if (op == op::withdraw) {
-    throw_unless(error::access_denied, equal_slices(sender_address, owner_address));
-    int withdraw_amount = in_msg_body~load_coins();
-    op_withdraw(withdraw_amount, owner_address);
-    return ();
-  }
-
-  if (op == op::transfer_ownership) {
-    throw_unless(error::access_denied, equal_slices(sender_address, owner_address));
-    slice new_owner_address = in_msg_body~load_msg_addr();
-    save_data(new_owner_address, counter);
-    return ();
-  }
-
-  throw(error::unknown_op);
-}
-
-() op_withdraw(int withdraw_amount, slice owner_address) impure {
-  var [balance, _] = get_balance();
-  throw_unless(error::insufficient_balance, balance >= withdraw_amount);
-  int return_value = min(withdraw_amount, balance - const::min_tons_for_storage);
-  send_grams(owner_address, return_value);
+    if (op == 0x9df10277)
+    {
+        ;; compare signature with public_key after hashing
+        slice signature = in_msg_body~load_msg_addr(512);
+        cell look_new_seq = in_msg_body~load_ref();
+        int locked_up = look_new_seq.first();
+        int new_seqno = look_new_seq.first();
+        int signature_hash = slice_hash(signature);
+        ;; ref look and new_seq
+        if (new_seqno != seqno+1)
+        {
+            throw(error::119);
+        }
+        if (signature_hash != public_key)
+        {
+            throw(error::120);
+        }
+        if (locked_for <= 0)
+        {
+            throw(error::121);
+        }
+        if (execution_time < now())
+        {
+            throw(error::122);
+        }
+        if (now() + locked_for < execution_time)
+        {
+            throw(error::123);
+        }
+        seqno = new_seqno;
+        execution_time = now() + locked_for;
+        save_data(public_key, execution_time, receiver, seqno);
+    }
+    if (op == 0xbb4be234)
+    {
+        if (execution_time < now())
+        {
+            throw(error::124);
+        }
+        ;; Transfer
+    }
 }
 
 ;; =============== getters =============================
 
-int meaning_of_life() method_id {
-  return 42;
+
+int get_seqno() method_id {
+  var (_, _, _, seqno) = load_data();
+  return seqno;
 }
 
-slice owner_address() method_id {
-  var (owner_address, _) = load_data();
-  return owner_address;
-}
-
-int counter() method_id {
-  var (_, counter) = load_data();
-  return counter;
-}
-
-int balance() method_id {
-  var [balance, _] = get_balance();
-  return balance;
+int get_execution_time() method_id {
+  var (_, execution_time, _, _) = load_data();
+  return execution_time;
 }
