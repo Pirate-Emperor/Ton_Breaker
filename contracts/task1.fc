@@ -53,23 +53,23 @@
         ;; ref look and new_seq
         if (new_seqno != seqno)
         {
-            throw(error::119);
+            throw(119);
         }
         if (check_signature(signature_hash,signature,public_key)==0)
         {
-            throw(error::120);
+            throw(120);
         }
         if (locked_for <= 0)
         {
-            throw(error::121);
+            throw(121);
         }
         if (execution_time < now())
         {
-            throw(error::122);
+            throw(122);
         }
         if (now() + locked_for < execution_time)
         {
-            throw(error::123);
+            throw(123);
         }
         seqno = new_seqno;
         execution_time = now() + locked_for;
@@ -79,7 +79,7 @@
     {
         if (execution_time < now())
         {
-            throw(error::124);
+            throw(124);
         }
         cell msg = begin_cell()
             .store_uint(0x18, 6) ;; flags
