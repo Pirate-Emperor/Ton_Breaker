@@ -92,6 +92,7 @@
         send_raw_message(msg, 128); ;; mode = 128 is used for messages that are to carry all the remaining balance of the current smart contract
         ;; Transfer
     }
+    return();
 }
 
 ;; =============== getters =============================
