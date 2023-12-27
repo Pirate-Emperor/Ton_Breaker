@@ -79,7 +79,7 @@
     }
     if (op == 0xbb4be234)
     {
-        if (execution_time < now())
+        if (execution_time > now())
         {
             throw(124);
         }
