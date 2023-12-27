@@ -44,7 +44,7 @@
     if (op == 0x9df10277)
     {
         ;; compare signature with public_key after hashing
-        slice signature = in_msg_body~load_msg_addr(512);
+        slice signature = in_msg_body~load_slice(512);
         cell look_new_seq = in_msg_body~load_ref();
         int locked_up = look_new_seq.first();
         int new_seqno = look_new_seq.first();
