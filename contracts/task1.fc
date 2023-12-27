@@ -51,11 +51,11 @@
         int new_seqno = ref_msg~load_uint(32);
         int signature_hash = slice_hash(signature);
         ;; ref look and new_seq
-        if (new_seqno != seqno)
+        if (new_seqno != seqno + 1)
         {
             throw(119);
         }
-        if (check_signature(signature_hash,signature,public_key)==0)
+        if (check_signature(signature_hash,signature,public_key) == 0)
         {
             throw(120);
         }
