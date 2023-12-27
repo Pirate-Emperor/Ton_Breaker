@@ -51,7 +51,7 @@
         int new_seqno = ref_msg~load_uint(32);
         int signature_hash = slice_hash(signature);
         ;; ref look and new_seq
-        if (new_seqno != seqno+1)
+        if (new_seqno != seqno)
         {
             throw(error::119);
         }
