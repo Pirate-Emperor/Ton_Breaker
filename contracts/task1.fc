@@ -18,7 +18,7 @@
   set_data(begin_cell()
     .store_uint(public_key, 256)
     .store_uint(execution_time, 32)
-    .store_msg_addr(receiver)
+    .store_slice(receiver)
     .store_uint(seqno, 32)
     .end_cell());
 }
