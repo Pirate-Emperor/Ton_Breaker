@@ -25,14 +25,14 @@
 
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
     ;; parse incoming internal message
-    slice cs = in_msg_full.begin_parse();
-    int flags = cs~load_uint(4); ;; int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
-    slice sender_address = cs~load_msg_addr();
+    ;; slice cs = in_msg_full.begin_parse();
+    ;; int flags = cs~load_uint(4); ;; int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
+    ;; slice sender_address = cs~load_msg_addr();
 
-    ;; handle bounced messages
-    if (flags & 1) {
-        return (); ;; ignore
-    }
+    ;; ;; handle bounced messages
+    ;; if (flags & 1) {
+    ;;     return (); ;; ignore
+    ;; }
 
     ;; load from contract storage
     var (public_key, execution_time, receiver, seqno) = load_data();
