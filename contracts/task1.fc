@@ -46,15 +46,16 @@
         ;; compare signature with public_key after hashing
         slice signature = in_msg_body~load_slice(512);
         cell look_new_seq = in_msg_body~load_ref();
-        int locked_up = look_new_seq.first();
-        int new_seqno = look_new_seq.first();
+        slice ref_msg = look_new_seq.begin_parse();
+        int locked_for = ref_msg~load_uint(32);
+        int new_seqno = ref_msg~load_uint(32);
         int signature_hash = slice_hash(signature);
         ;; ref look and new_seq
         if (new_seqno != seqno+1)
         {
             throw(error::119);
         }
-        if (signature_hash != public_key)
+        if (check_signature(signature_hash,signature,public_key)==0)
         {
             throw(error::120);
         }
