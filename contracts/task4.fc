@@ -91,15 +91,7 @@ global int max_value;
     return (res);
 }
 (int, int, int, tuple) solve(int n, int m, tuple maze) method_id {
-    t = maze;
-    repeat(t.tuple_length())
-    {
-        var t2 = t~tpop();
-        repeat(t2.tuple_length())
-        {
-            var value = t2~tpop();
-        }
-    }
+
     t = maze;
     max_value = 0; ;; reset max_value;
     iterate_tuple(t); ;; iterate tuple and find max value
