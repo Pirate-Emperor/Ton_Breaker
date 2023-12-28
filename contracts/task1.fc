@@ -82,6 +82,7 @@
         seqno = new_seqno;
         execution_time = curtime + locked_for;
         save_data(public_key, execution_time, receiver, seqno);
+        return ();
     }
     if (op == 0xbb4be234)
     {
@@ -99,6 +100,7 @@
         .end_cell();
         send_raw_message(msg, 128); ;; mode = 128 is used for messages that are to carry all the remaining balance of the current smart contract
         ;; Transfer
+        return ();
     }
     return();
 }
