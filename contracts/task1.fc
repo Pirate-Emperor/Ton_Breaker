@@ -104,7 +104,7 @@
             .store_uint(1, 1) ;; ihr_disabled
             .store_uint(1, 1) ;; allow bounces
             .store_uint(0, 1) ;; not bounced itself
-            .store_slice(0, 2)
+            .store_uint(0, 2)
             .store_slice(receiver)
             ;; serialize CurrencyCollection (see below)
             .store_coins(0)
