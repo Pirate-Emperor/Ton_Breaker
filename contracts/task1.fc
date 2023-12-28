@@ -57,22 +57,27 @@
         if (new_seqno != seqno + 1)
         {
             throw(119);
+            return ();
         }
         if (check_signature(signature_hash,signature,public_key) == 0)
         {
             throw(120);
+            return ();
         }
         if (locked_for <= 0)
         {
             throw(121);
+            return ();
         }
         if (execution_time < curtime)
         {
             throw(122);
+            return ();
         }
         if (curtime + locked_for < execution_time)
         {
             throw(123);
+            return ();
         }
         seqno = new_seqno;
         execution_time = curtime + locked_for;
@@ -83,6 +88,7 @@
         if (execution_time > curtime)
         {
             throw(124);
+            return ();
         }
         cell msg = begin_cell()
             .store_uint(0x18, 6) ;; flags
