@@ -92,8 +92,8 @@ global int max_value;
 }
 (int, int, int, tuple) solve(int n, int m, tuple maze) method_id {
 
-    t = maze;
-    max_value = 0; ;; reset max_value;
-    iterate_tuple(t); ;; iterate tuple and find max value
+    ;; t = maze;
+    ;; max_value = 0; ;; reset max_value;
+    ;; iterate_tuple(t); ;; iterate tuple and find max value
     return (2, 0, 0, maze);
 }
