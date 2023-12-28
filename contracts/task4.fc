@@ -5,7 +5,7 @@
 }
 
 (int, int, int, tuple) solve(int n, int m, tuple maze) method_id {
-  var (_, execution_time, _, _) = load_data();
+;;   var (_, execution_time, _, _) = load_data();
   
   return (0, 0, 0, maze);
 }
