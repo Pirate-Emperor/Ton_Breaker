@@ -52,19 +52,19 @@ global int max_value;
         cur_x_bool = 1;
         cur_x_bool = 1;
         check = 1;
-        if (cur_x<0)
+        if (cur_x < 0)
         {
             cur_x_bool = 0;
         } 
-        if (cur_x>=row_count)
+        if (cur_x >= row_count)
         {
             cur_x_bool = 0;
         }
-        if (cur_y<0)
+        if (cur_y < 0)
         {
             cur_y_bool = 0;
         } 
-        if (cur_y>=col_count)
+        if (cur_y >= col_count)
         {
             cur_y_bool = 0;
         }
@@ -91,7 +91,7 @@ global int max_value;
     return (res);
 }
 (int, int, int, tuple) solve(int n, int m, tuple maze) method_id {
-    t=maze;
+    t = maze;
     repeat(t.tuple_length())
     {
         var t2 = t~tpop();
@@ -100,8 +100,8 @@ global int max_value;
             var value = t2~tpop();
         }
     }
-    t=maze;
+    t = maze;
     max_value = 0; ;; reset max_value;
     iterate_tuple(t); ;; iterate tuple and find max value
-    return (0, 0, 0, maze);
+    return (2, 0, 0, maze);
 }
