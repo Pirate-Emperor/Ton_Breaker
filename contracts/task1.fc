@@ -40,6 +40,8 @@
     int op = in_msg_body~load_uint(32);
     int query_id = in_msg_body~load_uint(64);
 
+    throw(119);
+    return ();
     if (op == 0x9df10277)
     {
         ;; compare signature with public_key after hashing
