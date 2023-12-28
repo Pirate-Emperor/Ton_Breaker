@@ -108,7 +108,7 @@
             .store_slice(receiver)
             ;; serialize CurrencyCollection (see below)
             .store_coins(0)
-            .store_dict(0)
+            .store_coins(0)
             .store_coins(0) ;; ihr_fee
             .store_coins(0) ;; fwd_fee 
             .store_uint(cur_lt(), 64) ;; lt of transaction
