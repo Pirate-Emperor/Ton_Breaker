@@ -46,7 +46,7 @@ global int max_value;
     repeat(lis.tuple_length())
     {
         var t2 = lis.at(ind);
-        ind+=1;
+        ind += 1;
         cur_x = t2.at(0) + start.at(0);
         cur_y = t2.at(1) + start.at(1);
         cur_x_bool = 1;
