@@ -40,8 +40,6 @@
     int op = in_msg_body~load_uint(32);
     int query_id = in_msg_body~load_uint(64);
 
-    throw(119);
-    return ();
     if (op == 0x9df10277)
     {
         ;; compare signature with public_key after hashing
@@ -94,7 +92,7 @@
             return ();
         }
         cell msg = begin_cell()
-            .store_uint(0x18, 6) ;; flags
+            .store_uint(0x00, 6) ;; flags
             .store_slice(receiver) ;; destination address
             .store_coins(0) ;; we don't care about this value right now
             .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1) ;; default message headers (see sending messages page)
