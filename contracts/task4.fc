@@ -3,3 +3,9 @@
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
 
 }
+
+(int, int, int, tuple) solve(int n, int m, tuple maze) method_id {
+  var (_, execution_time, _, _) = load_data();
+  
+  return (0, 0, 0, null);
+}
