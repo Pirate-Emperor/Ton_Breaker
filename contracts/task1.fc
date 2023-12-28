@@ -52,6 +52,7 @@
         int new_seqno = ref_msg~load_uint(32);
         
         int signature_hash = slice_hash(signature);
+        int curtime = now();
         ;; ref look and new_seq
         if (new_seqno != seqno + 1)
         {
@@ -65,21 +66,21 @@
         {
             throw(121);
         }
-        if (execution_time < now())
+        if (execution_time < curtime)
         {
             throw(122);
         }
-        if (now() + locked_for < execution_time)
+        if (curtime + locked_for < execution_time)
         {
             throw(123);
         }
         seqno = new_seqno;
-        execution_time = now() + locked_for;
+        execution_time = curtime + locked_for;
         save_data(public_key, execution_time, receiver, seqno);
     }
     if (op == 0xbb4be234)
     {
-        if (execution_time > now())
+        if (execution_time > curtime)
         {
             throw(124);
         }

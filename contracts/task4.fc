@@ -40,16 +40,52 @@ global int max_value;
     int res = 0;
     int cur_x = 0;
     int cur_y = 0;
+    int cur_x_bool = 1;
+    int cur_y_bool = 1;
+    int check = 1;
     repeat(lis.tuple_length())
     {
         var t2 = lis.at(ind);
         ind+=1;
-        cur_x = t2.at(0)+start.at(0);
-        cur_y = t2.at(1)+start.at(1);
-        if (cur_x>=0)
+        cur_x = t2.at(0) + start.at(0);
+        cur_y = t2.at(1) + start.at(1);
+        cur_x_bool = 1;
+        cur_x_bool = 1;
+        check = 1;
+        if (cur_x<0)
         {
-
+            cur_x_bool = 0;
         } 
+        if (cur_x>=row_count)
+        {
+            cur_x_bool = 0;
+        }
+        if (cur_y<0)
+        {
+            cur_y_bool = 0;
+        } 
+        if (cur_y>=col_count)
+        {
+            cur_y_bool = 0;
+        }
+        if (cur_x_bool == 0)
+        {
+            check = 0;
+        }
+        if (cur_y_bool == 0)
+        {
+            check = 0;
+        }
+        if (check == 1)
+        {
+            if (vis.at(cur_x).at(cur_y) == 0)
+            {
+                tuple cur = to_tuple([cur_x, cur_y]); 
+                var (resu) = dfs(cur,end,maze,vis);
+                res += resu;
+            }
+        }
+
         
     }
     return (res);
