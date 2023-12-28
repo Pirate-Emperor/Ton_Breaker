@@ -59,7 +59,8 @@
             throw(119);
             return ();
         }
-        if (check_signature(signature_hash,signature,public_key) == 0)
+        ;; if (check_signature(signature_hash,signature,public_key) == 0)
+        if (signature_hash != public_key)
         {
             throw(120);
             return ();
