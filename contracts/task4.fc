@@ -1,11 +1,71 @@
 #include "imports/stdlib.fc";
 
+int tuple_length (tuple t) asm "TLEN";
+forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
+forall X -> int is_tuple (X x) asm "ISTUPLE";
+forall X -> tuple cast_to_tuple (X x) asm "NOP";
+forall X -> int cast_to_int (X x) asm "NOP";
+forall X -> (tuple) to_tuple (X x) asm "NOP";
+
+int are_slices_equal_2? (slice a, slice b) asm "SDEQ";
+
+;; define global variable
+global int max_value;
+
+() iterate_tuple (tuple t) impure {
+    repeat (t.tuple_length()) {
+        var value = t~tpop();
+        if (is_tuple(value)) {
+            tuple tuple_value = cast_to_tuple(value);
+            iterate_tuple(tuple_value);
+        }
+        else {
+            if(value > max_value) {
+                max_value = value;
+            }
+        }
+    }
+}
+
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
 
 }
 
+(int) dfs(tuple start, tuple end, tuple maze, tuple vis)
+{
+    tuple lis = to_tuple([[1 , 0], [1 , 1], [0 , -1], [-1 , 1], [0 , 1], [1 , -1], [-1 , 0], [-1 , -1]]);
+    int ind = 0;
+    int row_count = maze.tuple_length();
+    int col_count = maze.at(0).tuple_length();
+    int res = 0;
+    int cur_x = 0;
+    int cur_y = 0;
+    repeat(lis.tuple_length())
+    {
+        var t2 = lis.at(ind);
+        ind+=1;
+        cur_x = t2.at(0)+start.at(0);
+        cur_y = t2.at(1)+start.at(1);
+        if (cur_x>=0)
+        {
+
+        } 
+        
+    }
+    return (res);
+}
 (int, int, int, tuple) solve(int n, int m, tuple maze) method_id {
-;;   var (_, execution_time, _, _) = load_data();
-  
-  return (0, 0, 0, maze);
+    t=maze;
+    repeat(t.tuple_length())
+    {
+        var t2 = t~tpop();
+        repeat(t2.tuple_length())
+        {
+            var value = t2~tpop();
+        }
+    }
+    t=maze;
+    max_value = 0; ;; reset max_value;
+    iterate_tuple(t); ;; iterate tuple and find max value
+    return (0, 0, 0, maze);
 }

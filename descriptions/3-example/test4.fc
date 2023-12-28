@@ -1,0 +1,18 @@
+forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
+int tuple_length (tuple t) asm "TLEN";
+forall X -> (tuple) to_tuple (X x) asm "NOP";
+
+(tuple) reverse_tuple (tuple t1) {
+    tuple t2 = empty_tuple();
+    repeat (t1.tuple_length()) {
+        var value = t1~tpop();
+        t2~tpush(value);
+    }
+    return t2;
+}
+
+() main () {
+    tuple t = to_tuple([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    tuple reversed_t = reverse_tuple(t);
+    ~dump(reversed_t); ;; [10 9 8 7 6 5 4 3 2 1]
+}
