@@ -113,10 +113,13 @@ global tuple resmaze;
                 vis = tuples::tset(vis,cur_x,tuples::tset(vis.at(cur_x),cur_y,1));
                 tuple cur = to_tuple([cur_x, cur_y]);
                 temp_char = maze.at(cur_x).at(cur_y);
-                maze.at(cur_x).at(cur_y) = 33  
+                ;; maze.at(cur_x).at(cur_y) = 33  
+                maze = tuples::tset(maze,cur_x,tuples::tset(maze.at(cur_x),cur_y,33));
                 var (resu, resu_len, resu_tmaze) = dfs(cost, tlen, cur, maze, vis);
-                maze.at(cur_x).at(cur_y)  = temp;
-                vis.at(cur_x).at(cur_y) = 0;
+                ;; maze.at(cur_x).at(cur_y)  = temp;
+                maze = tuples::tset(maze,cur_x,tuples::tset(maze.at(cur_x),cur_y,temp));
+                ;; vis.at(cur_x).at(cur_y) = 0;
+                vis = tuples::tset(vis,cur_x,tuples::tset(vis.at(cur_x),cur_y,0));
             }
         }
 
