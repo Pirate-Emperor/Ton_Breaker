@@ -64,6 +64,8 @@
         ;;     throw(120);
         ;;     return ();
         ;; }
+
+
         if (locked_for <= 0)
         {
             throw(121);
@@ -74,7 +76,7 @@
             throw(122);
             return ();
         }
-        if (now() + locked_for < execution_time)
+        if (now() + locked_for <= execution_time)
         {
             throw(123);
             return ();
