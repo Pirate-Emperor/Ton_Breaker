@@ -31,18 +31,43 @@ global int max_value;
 
 }
 
-(int) dfs(tuple start, tuple end, tuple maze, tuple vis)
+global int rescost;
+global int reslen;
+global tuple resmaze;
+() dfs(int cost, int tlen, tuple start, tuple maze, tuple vis)
 {
     tuple lis = to_tuple([[1 , 0], [1 , 1], [0 , -1], [-1 , 1], [0 , 1], [1 , -1], [-1 , 0], [-1 , -1]]);
     int ind = 0;
     int row_count = maze.tuple_length();
     int col_count = maze.at(0).tuple_length();
     int res = 0;
+    int max_res = 1000000;
+    int res_len = 0;
+    int resu_len = 0;
     int cur_x = 0;
     int cur_y = 0;
     int cur_x_bool = 1;
     int cur_y_bool = 1;
     int check = 1;
+    var temp_char = "F";
+    if (maze.at(start.at(0)).at(start.at(1)) == "E" )
+    {
+        if (cost < rescost)
+        {
+            reslen = tlen;
+            rescost = cost;
+            resmaze = maze.to_tuple();
+        }
+        return ();
+    }
+    if (maze.at(start.at(0)).at(start.at(1)) == "?" )
+    {
+        cost += 1;
+    }
+    if (maze.at(start.at(0)).at(start.at(1)) == "X" )
+    {
+        cost += 1000;
+    }
     repeat(lis.tuple_length())
     {
         var t2 = lis.at(ind);
@@ -52,6 +77,7 @@ global int max_value;
         cur_x_bool = 1;
         cur_x_bool = 1;
         check = 1;
+        
         if (cur_x < 0)
         {
             cur_x_bool = 0;
@@ -80,20 +106,56 @@ global int max_value;
         {
             if (vis.at(cur_x).at(cur_y) == 0)
             {
-                tuple cur = to_tuple([cur_x, cur_y]); 
-                var (resu) = dfs(cur,end,maze,vis);
-                res += resu;
+                vis.at(cur_x).at(cur_y) = 1;
+                tuple cur = to_tuple([cur_x, cur_y]);
+                temp_char = maze.at(cur_x).at(cur_y);
+                maze.at(cur_x).at(cur_y) = "!"  
+                var (resu, resu_len, resu_tmaze) = dfs(cost, tlen, cur, maze, vis);
+                maze.at(cur_x).at(cur_y)  = temp;
+                vis.at(cur_x).at(cur_y) = 0;
             }
         }
 
         
     }
-    return (res);
+    return ();
 }
 (int, int, int, tuple) solve(int n, int m, tuple maze) method_id {
 
+    rescost = 1000000;
+    var vis = empty_tuple();
+    int strx = 0;
+    int stry = 0;
+    int endx = 0;
+    int endy = 0;
+    int curx = 0;
+    int cury = 0;
+    repeat(maze.tuple_length())
+    {
+        var temp = empty_tuple();
+        repeat(maze.at(0).tuple_length())
+        {
+            if (maze.at(curx).at(cury) == "S")
+            {
+                strx = curx;
+                stry = cury;
+            }
+            if (maze.at(curx).at(cury) == "E")
+            {
+                endx = curx;
+                endy = cury;
+            }
+            temp~tpush(0);
+            cury += 1;
+        }
+        vis~tpush(temp);
+        curx += 1;
+    }
+    dfs(0, 0, ([strx, stry]), maze, vis);
+    xcost = rescost / 1000;
+    scost = (rescost % 1000);
     ;; t = maze;
     ;; max_value = 0; ;; reset max_value;
     ;; iterate_tuple(t); ;; iterate tuple and find max value
-    return (2, 0, 0, maze);
+    return (xcost, scost, reslen, resmaze);
 }
