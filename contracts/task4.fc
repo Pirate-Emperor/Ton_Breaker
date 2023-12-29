@@ -50,7 +50,7 @@ global tuple resmaze;
     int cur_y_bool = 1;
     int check = 1;
     var temp_char = "F";
-    if (maze.at(start.at(0)).at(start.at(1)) == "E" )
+    if (maze.at(start.at(0)).at(start.at(1)) == 69 )
     {
         if (cost < rescost)
         {
@@ -60,11 +60,11 @@ global tuple resmaze;
         }
         return ();
     }
-    if (maze.at(start.at(0)).at(start.at(1)) == "?" )
+    if (maze.at(start.at(0)).at(start.at(1)) == 63 )
     {
         cost += 1;
     }
-    if (maze.at(start.at(0)).at(start.at(1)) == "X" )
+    if (maze.at(start.at(0)).at(start.at(1)) == 88 )
     {
         cost += 1000;
     }
@@ -109,7 +109,7 @@ global tuple resmaze;
                 vis.at(cur_x).at(cur_y) = 1;
                 tuple cur = to_tuple([cur_x, cur_y]);
                 temp_char = maze.at(cur_x).at(cur_y);
-                maze.at(cur_x).at(cur_y) = "!"  
+                maze.at(cur_x).at(cur_y) = 33  
                 var (resu, resu_len, resu_tmaze) = dfs(cost, tlen, cur, maze, vis);
                 maze.at(cur_x).at(cur_y)  = temp;
                 vis.at(cur_x).at(cur_y) = 0;
@@ -135,12 +135,12 @@ global tuple resmaze;
         var temp = empty_tuple();
         repeat(maze.at(0).tuple_length())
         {
-            if (maze.at(curx).at(cury) == "S")
+            if (maze.at(curx).at(cury) == 83)
             {
                 strx = curx;
                 stry = cury;
             }
-            if (maze.at(curx).at(cury) == "E")
+            if (maze.at(curx).at(cury) == 69)
             {
                 endx = curx;
                 endy = cury;
