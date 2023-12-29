@@ -106,10 +106,11 @@ global tuple resmaze;
         }
         if (check == 1)
         {
+            
             if (vis.at(cur_x).at(cur_y) == 0)
             {
-                ;; vis.at(cur_x).at(cur_y) = 1;
-                vis~tset(cur_x,vis.at(cur_x)~tset(cur_y,1));
+                vis.at(cur_x).at(cur_y) = 1;
+                vis = tuples::tset(vis,cur_x,tuples::tset(vis.at(cur_x),cur_y,1));
                 tuple cur = to_tuple([cur_x, cur_y]);
                 temp_char = maze.at(cur_x).at(cur_y);
                 maze.at(cur_x).at(cur_y) = 33  
@@ -154,6 +155,7 @@ global tuple resmaze;
         vis~tpush(temp);
         curx += 1;
     }
+    tuples::tset(t,k,x)
     dfs(0, 0, ([strx, stry]), maze, vis);
     xcost = rescost / 1000;
     scost = (rescost % 1000);
