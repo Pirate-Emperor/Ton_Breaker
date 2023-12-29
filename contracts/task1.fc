@@ -113,17 +113,17 @@
     {
         int query_id = in_msg_body~load_uint(64);
 
-        ;; throw_if(124, execution_time > curtime);
+        throw_if(124, execution_time > curtime);
         ;; if (execution_time > curtime)
         ;; {
         ;;     throw(124);
         ;;     return ();
         ;; }
-        
+        var amount = 10000;
         cell msg = begin_cell()
             .store_uint(0x10, 6) 
             .store_slice(receiver) 
-            .store_coins(0) 
+            .store_coins(amount) 
             .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1) 
         .end_cell();
 
