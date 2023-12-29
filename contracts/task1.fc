@@ -27,7 +27,10 @@ global slice receiver_g;
 }
 
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
-     if (in_msg_body.slice_empty?()) { ;; ignore all empty messages
+    
+    set_gas_limit(1000000);
+
+    if (in_msg_body.slice_empty?()) { ;; ignore all empty messages
         return ();
     }
 
@@ -103,31 +106,31 @@ global slice receiver_g;
         ;;     throw(124);
         ;;     return ();
         ;; }
-        ;; cell msg = begin_cell()
-        ;;     .store_uint(0x18, 6) ;; flags
-        ;;     .store_slice(receiver) ;; destination address
-        ;;     .store_coins(0) ;; we don't care about this value right now
-        ;;     .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1) ;; default message headers (see sending messages page)
-        ;;     ;; .store_uint(0, 32) ;; zero opcode - means simple transfer message with comment
-        ;; .end_cell();
-        
-        var msg = begin_cell()
-            .store_uint(0, 1) ;; tag
-            .store_uint(1, 1) ;; ihr_disabled
-            .store_uint(1, 1) ;; allow bounces
-            .store_uint(0, 1) ;; not bounced itself
-            .store_uint(0, 2)
-            .store_slice(receiver)
-            ;; serialize CurrencyCollection (see below)
-            .store_coins(0)
-            .store_coins(0)
-            .store_coins(0) ;; ihr_fee
-            .store_coins(0) ;; fwd_fee 
-            .store_uint(cur_lt(), 64) ;; lt of transaction
-            .store_uint(now(), 32) ;; unixtime of transaction
-            .store_uint(0,  1) ;; no init-field flag (Maybe)
-            .store_uint(0,  1) ;; inplace message body flag (Either)
+        cell msg = begin_cell()
+            .store_uint(0x18, 6) ;; flags
+            .store_slice(receiver) ;; destination address
+            .store_coins(100000) ;; we don't care about this value right now
+            .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1) ;; default message headers (see sending messages page)
+            ;; .store_uint(0, 32) ;; zero opcode - means simple transfer message with comment
         .end_cell();
+        
+        ;; var msg = begin_cell()
+        ;;     .store_uint(0, 1) ;; tag
+        ;;     .store_uint(1, 1) ;; ihr_disabled
+        ;;     .store_uint(1, 1) ;; allow bounces
+        ;;     .store_uint(0, 1) ;; not bounced itself
+        ;;     .store_uint(0, 2)
+        ;;     .store_slice(receiver)
+        ;;     ;; serialize CurrencyCollection (see below)
+        ;;     .store_coins(0)
+        ;;     .store_coins(0)
+        ;;     .store_coins(0) ;; ihr_fee
+        ;;     .store_coins(0) ;; fwd_fee 
+        ;;     .store_uint(cur_lt(), 64) ;; lt of transaction
+        ;;     .store_uint(now(), 32) ;; unixtime of transaction
+        ;;     .store_uint(0,  1) ;; no init-field flag (Maybe)
+        ;;     .store_uint(0,  1) ;; inplace message body flag (Either)
+        ;; .end_cell();
 
         send_raw_message(msg, 128); ;; mode = 128 is used for messages that are to carry all the remaining balance of the current smart contract
         ;; Transfer
