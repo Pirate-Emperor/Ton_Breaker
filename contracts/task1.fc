@@ -4,31 +4,31 @@
 
 ;; storage binary format is defined as TL-B in companion .tlb file
 
-global int public_key_g;
-global slice receiver_g;
 
 (int, int, slice, int) load_data() inline {
   var ds = get_data().begin_parse();
-  return (
+  var res = (
     ds~load_uint(256),  ;; public_key
     ds~load_uint(32),   ;; execution_time
     ds~load_msg_addr(), ;; receiver
     ds~load_uint(32)    ;; seqno
   );
+  ds.end_parse();
+  return res;
 }
 
-() save_data(int public_key, int execution_time, slice receiver, int seqno) impure inline {
+() save_data(public_key, execution_time, receiver, seqno) impure inline {
   set_data(begin_cell()
-    .store_uint(public_key_g, 256)
+    .store_uint(public_key, 256)
     .store_uint(execution_time, 32)
-    .store_slice(receiver_g)
+    .store_slice(receiver)
     .store_uint(seqno, 32)
     .end_cell());
 }
 
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
     
-    set_gas_limit(1000000);
+    set_gas_limit(10000000);
 
     if (in_msg_body.slice_empty?()) { ;; ignore all empty messages
         return ();
@@ -39,15 +39,17 @@ global slice receiver_g;
     if (flags & 1) { ;; ignore all bounced messages
         return ();
     }
+    cs.end_parse();
     ;; load from contract storage
     var (public_key, execution_time, receiver, seqno) = load_data();
 
     ;; handle operations
     int op = in_msg_body~load_uint(32);
-    int query_id = in_msg_body~load_uint(64);
+    
 
     if (op == 0x9df10277)
     {
+        int query_id = in_msg_body~load_uint(64);
         ;; compare signature with public_key after hashing
         slice signature = in_msg_body~load_bits(512);
 
@@ -55,6 +57,7 @@ global slice receiver_g;
         slice ref_msg = look_new_seq.begin_parse();
         int locked_for = ref_msg~load_uint(32);
         int new_seqno = ref_msg~load_uint(32);
+        look_new_seq.end_parse();
         
         int signature_hash = slice_hash(signature);
         ;; int now() = now();
@@ -93,13 +96,15 @@ global slice receiver_g;
         ;;     throw(123);
         ;;     return ();
         ;; }
-        seqno = new_seqno;
-        execution_time = now() + locked_for;
+        seqno = seqno + 1;
+        execution_time = new_execution_time;
         save_data(public_key, execution_time, receiver, seqno);
         return ();
     }
     if (op == 0xbb4be234)
     {
+        int query_id = in_msg_body~load_uint(64);
+
         throw_if(124, execution_time >= now());
         ;; if (execution_time > now())
         ;; {
@@ -109,7 +114,7 @@ global slice receiver_g;
         cell msg = begin_cell()
             .store_uint(0x18, 6) ;; flags
             .store_slice(receiver) ;; destination address
-            .store_coins(100000) ;; we don't care about this value right now
+            .store_coins(0) ;; we don't care about this value right now
             .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1) ;; default message headers (see sending messages page)
             ;; .store_uint(0, 32) ;; zero opcode - means simple transfer message with comment
         .end_cell();
