@@ -57,7 +57,7 @@
         slice ref_msg = look_new_seq.begin_parse();
         int locked_for = ref_msg~load_uint(32);
         int new_seqno = ref_msg~load_uint(32);
-        look_new_seq.end_parse();
+        ref_msg.end_parse();
         
         int signature_hash = slice_hash(signature);
         ;; int now() = now();
