@@ -120,12 +120,21 @@
         ;;     return ();
         ;; }
         
+        ;; cell msg = begin_cell()
+        ;;     .store_uint(0x18, 6) 
+        ;;     .store_slice(receiver) 
+        ;;     .store_coins(0) 
+        ;;     .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1) 
+        ;; .end_cell();
+
         cell msg = begin_cell()
-            .store_uint(0x18, 6) 
+            .store_uint(0b10, 2) 
+            .store_uint(0, 2)
             .store_slice(receiver) 
             .store_coins(0) 
-            .store_uint(0, 1 + 4 + 4 + 64) 
+            .store_bits(0, 1) 
         .end_cell();
+
         send_raw_message(msg, 128); 
 
     }
