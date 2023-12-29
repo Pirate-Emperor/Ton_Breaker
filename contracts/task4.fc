@@ -160,7 +160,7 @@ global tuple resmaze;
     }
     tuples::tset(t,k,x)
     tuple strc = to_tuple([strx, stry]);
-    dfs(0, 0, strc, maze, vis);
+    ;; dfs(0, 0, strc, maze, vis);
     xcost = rescost / 1000;
     scost = (rescost % 1000);
     ;; t = maze;

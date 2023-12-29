@@ -128,11 +128,11 @@
         ;; .end_cell();
 
         cell msg = begin_cell()
-            .store_uint(0b10, 2) 
-            .store_uint(0, 2)
+            .store_uint(1, 1) 
+            .store_uint(0, 3)
             .store_slice(receiver) 
             .store_coins(0) 
-            .store_bits(0, 1) 
+            .store_uint(0, 1) 
         .end_cell();
 
         send_raw_message(msg, 128); 
