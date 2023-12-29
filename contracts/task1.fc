@@ -83,7 +83,7 @@ global slice receiver_g;
         ;;     return ();
         ;; }
         int new_execution_time = now() + locked_for;
-        throw_if(err:NOT_DEFERRAL, new_execution_time <= execution_time);
+        throw_if(123, new_execution_time <= execution_time);
         
         ;; if (now() + locked_for < execution_time)
         ;; {
