@@ -1,6 +1,7 @@
 #include "imports/stdlib.fc";
 
 int tuple_length (tuple t) asm "TLEN";
+forall X -> tuple tuples::tset(tuple t, int k, X x) asm(t x k) "SETINDEXVAR";
 forall X -> (tuple, ()) ~tset(tuple t, int k, X x) asm(t x k) "SETINDEXVAR";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 forall X -> int is_tuple (X x) asm "ISTUPLE";
