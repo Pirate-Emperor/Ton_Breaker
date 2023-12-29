@@ -1,6 +1,7 @@
 #include "imports/stdlib.fc";
 
 int tuple_length (tuple t) asm "TLEN";
+forall X -> (tuple, ()) ~tset(tuple t, int k, X x) asm(t x k) "SETINDEXVAR";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 forall X -> int is_tuple (X x) asm "ISTUPLE";
 forall X -> tuple cast_to_tuple (X x) asm "NOP";
@@ -106,7 +107,8 @@ global tuple resmaze;
         {
             if (vis.at(cur_x).at(cur_y) == 0)
             {
-                vis.at(cur_x).at(cur_y) = 1;
+                ;; vis.at(cur_x).at(cur_y) = 1;
+                vis~tset(cur_x,vis.at(cur_x)~tset(cur_y,1));
                 tuple cur = to_tuple([cur_x, cur_y]);
                 temp_char = maze.at(cur_x).at(cur_y);
                 maze.at(cur_x).at(cur_y) = 33  
