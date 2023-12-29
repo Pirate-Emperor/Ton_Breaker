@@ -115,7 +115,7 @@ global tuple resmaze;
                 temp_char = maze.at(cur_x).at(cur_y);
                 ;; maze.at(cur_x).at(cur_y) = 33  
                 maze = tuples::tset(maze,cur_x,tuples::tset(maze.at(cur_x),cur_y,33));
-                var (resu, resu_len, resu_tmaze) = dfs(cost, tlen, cur, maze, vis);
+                dfs(cost, tlen, cur, maze, vis);
                 ;; maze.at(cur_x).at(cur_y)  = temp;
                 maze = tuples::tset(maze,cur_x,tuples::tset(maze.at(cur_x),cur_y,temp));
                 ;; vis.at(cur_x).at(cur_y) = 0;
