@@ -93,7 +93,7 @@
         ;;     return ();
         ;; }
         int new_execution_time = now() + locked_for;
-        throw_if(123, new_execution_time <= execution_time);
+        throw_if(123, new_execution_time < execution_time);
         
         ;; if (now() + locked_for < execution_time)
         ;; {
@@ -109,7 +109,7 @@
     {
         int query_id = in_msg_body~load_uint(64);
 
-        throw_if(124, execution_time >= now());
+        throw_if(124, execution_time > now());
         ;; if (execution_time > now())
         ;; {
         ;;     throw(124);
