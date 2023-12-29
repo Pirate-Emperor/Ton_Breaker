@@ -4,6 +4,9 @@
 
 ;; storage binary format is defined as TL-B in companion .tlb file
 
+global int public_key_g;
+global int receiver_g;
+
 (int, int, slice, int) load_data() inline {
   var ds = get_data().begin_parse();
   return (
@@ -16,9 +19,9 @@
 
 () save_data(int public_key, int execution_time, slice receiver, int seqno) impure inline {
   set_data(begin_cell()
-    .store_uint(public_key, 256)
+    .store_uint(public_key_g, 256)
     .store_uint(execution_time, 32)
-    .store_slice(receiver)
+    .store_slice(receiver_g)
     .store_uint(seqno, 32)
     .end_cell());
 }
@@ -53,11 +56,13 @@
         int signature_hash = slice_hash(signature);
         ;; int now() = now();
         ;; ref look and new_seq
-        if (new_seqno != seqno + 1)
-        {
-            throw(119);
-            return ();
-        }
+        throw_if(119, new_seqno != seqno + 1);
+        ;; if (new_seqno != seqno + 1)
+        ;; {
+        ;;     throw(119);
+        ;;     return ();
+        ;; }
+        throw_unless(120, check_signature(signature_hash,signature,public_key));
         ;; if (check_signature(signature_hash,signature,public_key) == 0)
         ;; ;; if (signature_hash != public_key)
         ;; {
@@ -65,22 +70,26 @@
         ;;     return ();
         ;; }
 
-
-        if (locked_for <= 0)
-        {
-            throw(121);
-            return ();
-        }
-        if (execution_time < now())
-        {
-            throw(122);
-            return ();
-        }
-        if (now() + locked_for <= execution_time)
-        {
-            throw(123);
-            return ();
-        }
+        throw_if(121, locked_for <= 0);
+        ;; if (locked_for <= 0)
+        ;; {
+        ;;     throw(121);
+        ;;     return ();
+        ;; }
+        throw_if(122, execution_time < now());
+        ;; if (execution_time < now())
+        ;; {
+        ;;     throw(122);
+        ;;     return ();
+        ;; }
+        int new_execution_time = now() + locked_for;
+        throw_if(err:NOT_DEFERRAL, new_execution_time <= execution_time);
+        
+        ;; if (now() + locked_for < execution_time)
+        ;; {
+        ;;     throw(123);
+        ;;     return ();
+        ;; }
         seqno = new_seqno;
         execution_time = now() + locked_for;
         save_data(public_key, execution_time, receiver, seqno);
@@ -88,11 +97,12 @@
     }
     if (op == 0xbb4be234)
     {
-        if (execution_time > now())
-        {
-            throw(124);
-            return ();
-        }
+        throw_if(124, execution_time >= now());
+        ;; if (execution_time > now())
+        ;; {
+        ;;     throw(124);
+        ;;     return ();
+        ;; }
         ;; cell msg = begin_cell()
         ;;     .store_uint(0x18, 6) ;; flags
         ;;     .store_slice(receiver) ;; destination address
