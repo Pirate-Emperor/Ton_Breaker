@@ -50,6 +50,7 @@
     ;; handle operations
     int op = in_msg_body~load_uint(32);
     
+    int curtime = now();
 
     if (op == 0x9df10277)
     {
@@ -64,7 +65,7 @@
         ref_msg.end_parse();
         
         int signature_hash = slice_hash(signature);
-        ;; int now() = now();
+        
         ;; ref look and new_seq
         throw_if(119, new_seqno != seqno + 1);
         ;; if (new_seqno != seqno + 1)
@@ -86,21 +87,21 @@
         ;;     throw(121);
         ;;     return ();
         ;; }
-        throw_if(122, execution_time < now());
-        ;; if (execution_time < now())
+        throw_if(122, execution_time < curtime);
+        ;; if (execution_time < curtime)
         ;; {
         ;;     throw(122);
         ;;     return ();
         ;; }
-        int new_execution_time = now() + locked_for;
+        int new_execution_time = curtime + locked_for;
         throw_if(123, new_execution_time < execution_time);
         
-        ;; if (now() + locked_for < execution_time)
+        ;; if (curtime + locked_for < execution_time)
         ;; {
         ;;     throw(123);
         ;;     return ();
         ;; }
-        seqno = seqno + 1;
+        seqno = new_seqno;
         execution_time = new_execution_time;
         save_data(public_key, execution_time, receiver, seqno);
     }
@@ -108,40 +109,21 @@
     {
         int query_id = in_msg_body~load_uint(64);
 
-        throw_if(124, execution_time > now());
-        ;; if (execution_time > now())
+        throw_if(124, execution_time > curtime);
+        ;; if (execution_time > curtime)
         ;; {
         ;;     throw(124);
         ;;     return ();
         ;; }
-        cell msg = begin_cell()
-            .store_uint(0x18, 6) ;; flags
-            .store_slice(receiver) ;; destination address
-            .store_coins(0) ;; we don't care about this value right now
-            .store_uint(7, 1 + 4 + 4 + 64 + 32 + 1) ;; default message headers (see sending messages page)
-            .store_uint(1, 1)
-        .end_cell();
         
-        ;; var msg = begin_cell()
-        ;;     .store_uint(0, 1) ;; tag
-        ;;     .store_uint(1, 1) ;; ihr_disabled
-        ;;     .store_uint(1, 1) ;; allow bounces
-        ;;     .store_uint(0, 1) ;; not bounced itself
-        ;;     .store_uint(0, 2)
-        ;;     .store_slice(receiver)
-        ;;     ;; serialize CurrencyCollection (see below)
-        ;;     .store_coins(0)
-        ;;     .store_coins(0)
-        ;;     .store_coins(0) ;; ihr_fee
-        ;;     .store_coins(0) ;; fwd_fee 
-        ;;     .store_uint(cur_lt(), 64) ;; lt of transaction
-        ;;     .store_uint(now(), 32) ;; unixtime of transaction
-        ;;     .store_uint(0,  1) ;; no init-field flag (Maybe)
-        ;;     .store_uint(0,  1) ;; inplace message body flag (Either)
-        ;; .end_cell();
+        cell msg = begin_cell()
+            .store_uint(0x18, 6) 
+            .store_slice(receiver) 
+            .store_coins(0) 
+            .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1) 
+        .end_cell();
+        send_raw_message(msg, 128); 
 
-        ;; send_raw_message(msg, 128); ;; mode = 128 is used for messages that are to carry all the remaining balance of the current smart contract
-        ;; Transfer
     }
     return ();
 }
