@@ -62,6 +62,9 @@
 
         cell look_new_seq = in_msg_body~load_ref();
         slice ref_msg = look_new_seq.begin_parse();
+
+        var cs = ref_msg;
+
         int locked_for = ref_msg~load_uint(32);
         int new_seqno = ref_msg~load_uint(32);
         ref_msg.end_parse();
@@ -82,7 +85,6 @@
         ;;     throw(120);
         ;;     return ();
         ;; }
-
         throw_if(121, locked_for <= 0);
         ;; if (locked_for <= 0)
         ;; {
