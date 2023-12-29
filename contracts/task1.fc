@@ -105,19 +105,19 @@
     {
         int query_id = in_msg_body~load_uint(64);
 
-        ;; throw_if(124, execution_time >= now());
+        throw_if(124, execution_time >= now());
         ;; if (execution_time > now())
         ;; {
         ;;     throw(124);
         ;;     return ();
         ;; }
-        cell msg = begin_cell()
-            .store_uint(0x18, 6) ;; flags
-            .store_slice(receiver) ;; destination address
-            .store_coins(0) ;; we don't care about this value right now
-            .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1) ;; default message headers (see sending messages page)
-            ;; .store_uint(0, 32) ;; zero opcode - means simple transfer message with comment
-        .end_cell();
+        ;; cell msg = begin_cell()
+        ;;     .store_uint(0x18, 6) ;; flags
+        ;;     .store_slice(receiver) ;; destination address
+        ;;     .store_coins(0) ;; we don't care about this value right now
+        ;;     .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1) ;; default message headers (see sending messages page)
+        ;;     ;; .store_uint(0, 32) ;; zero opcode - means simple transfer message with comment
+        ;; .end_cell();
         
         ;; var msg = begin_cell()
         ;;     .store_uint(0, 1) ;; tag
