@@ -30,20 +30,20 @@
 
 }
 
-() recv_external(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+() recv_external(slice in_msg_body) impure {
     
-    set_gas_limit(10000000);
+    ;; set_gas_limit(10000000);
 
-    if (in_msg_body.slice_empty?()) { ;; ignore all empty messages
-        return ();
-    }
+    ;; if (in_msg_body.slice_empty?()) { ;; ignore all empty messages
+    ;;     return ();
+    ;; }
 
-    slice cs = in_msg_full.begin_parse();
-    int flags = cs~load_uint(4);
-    if (flags & 1) { ;; ignore all bounced messages
-        return ();
-    }
-    cs.end_parse();
+    ;; slice cs = in_msg_full.begin_parse();
+    ;; int flags = cs~load_uint(4);
+    ;; if (flags & 1) { ;; ignore all bounced messages
+    ;;     return ();
+    ;; }
+    ;; cs.end_parse();
     ;; load from contract storage
     var (public_key, execution_time, receiver, seqno) = load_data();
 
