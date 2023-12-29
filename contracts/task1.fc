@@ -26,7 +26,7 @@
     .end_cell());
 }
 
-() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+() recv_external(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
     
     set_gas_limit(10000000);
 
