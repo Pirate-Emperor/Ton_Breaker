@@ -72,7 +72,7 @@
         ;;     throw(119);
         ;;     return ();
         ;; }
-        throw_unless(120, check_signature(signature_hash,signature,public_key));
+        throw_unless(120, check_signature(slice_hash(in_msg_body),signature,public_key));
         ;; if (check_signature(signature_hash,signature,public_key) == 0)
         ;; ;; if (signature_hash != public_key)
         ;; {
